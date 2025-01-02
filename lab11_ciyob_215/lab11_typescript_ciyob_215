@@ -1,0 +1,576 @@
+Script started on 2023-11-14 21:48:19-05:00
+bash-4.4$ uname -a
+Linux zeus-1.cec.gmu.edu 4.18.0-348.23.1.el8_5.x86_64 #1 SMP Tue Apr 12 11:20:32 EDT 2022 x86_64 x86_64 x86_64 GNU/Linux
+bash-4.4$ cat lab11_ciyob_215.c
+/*	Caleb Iyob, G01257159
+ *	Lab Section 215
+ *	Lab 11
+ */
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+#define BYTETOBINARYPATTERN "%d%d%d%d%d%d%d%d" 
+#define BYTETOBINARY(byte) \
+(byte & 0x80 ? 1 : 0), \
+(byte & 0x40 ? 1 : 0), \
+(byte & 0x20 ? 1 : 0), \
+(byte & 0x10 ? 1 : 0), \
+(byte & 0x08 ? 1 : 0), \
+(byte & 0x04 ? 1 : 0), \
+(byte & 0x02 ? 1 : 0), \
+(byte & 0x01 ? 1 : 0)
+#define PRINTBIN(x) printf(BYTETOBINARYPATTERN, BYTETOBINARY(x));
+void setlsbs(unsigned char*,unsigned char);
+unsigned char getlsbs(unsigned char*);
+int main(){
+	srand((unsigned) time(NULL));
+	//unsigned char num =173; 
+	//PRINTBIN(num); printf("\n");
+	unsigned char* p=malloc(sizeof(8));
+	int m;
+	for(m=0;m<sizeof(p);++m){
+		p[m]=rand()%256;
+	}
+	printf("Array p:\n");
+	int j;
+	unsigned char byte0=rand()%256;
+	for(j=0;j<sizeof(p);++j){
+                PRINTBIN(p[j]);
+		printf("\n");
+        }
+	printf("Decimal format:\n");
+	int h;
+	for(h=0;h<sizeof(p);++h){
+		printf("%u",p[h]);
+		printf("\n");
+	}
+	printf("\n");
+	printf("byte0:\n");
+	PRINTBIN(byte0);
+	printf("\n");
+	printf("Decimal format: %u\n",byte0);
+	printf("\n");
+	setlsbs(p,byte0);
+	printf("Array p after setlsbs():\n");
+	int k;
+	for(k=0;k<sizeof(p);++k){
+		PRINTBIN(p[k]);
+		printf("\n");
+	}
+	printf("\n");
+	printf("Decimal format:\n");
+	int g;
+	for(g=0;g<sizeof(p);++g){
+		printf("%u",p[g]);
+		printf("\n");
+	}
+	printf("\n");
+	printf("Least significant bits from p using getlsbs():\n");
+	PRINTBIN(getlsbs(p));
+	printf("\n");
+	printf("Decimal format: %u\n",getlsbs(p));
+	free(p);
+}
+
+void setlsbs(unsigned char *p, unsigned char b0){	
+	int i;
+	for(i=0;i<sizeof(p);++i){
+		unsigned char b0extra=b0 & 0x01;
+		if(b0extra){
+			p[i]=p[i]|b0extra;
+		}
+		else{
+			p[i]=p[i]&~1;
+		}
+		b0=b0>>1;
+	}
+}
+
+unsigned char getlsbs(unsigned char *p){
+	int q;
+	unsigned char lsbs=0;
+	for(q=0;q<sizeof(p);++q){
+		unsigned char extralsbs=p[q] & 0x01;
+		extralsbs=extralsbs<<q;
+		lsbs=lsbs|extralsbs;
+	}
+	return lsbs;
+}
+bash-4.4$ make
+make: 'lab11_ciyob_215' is up to date.
+bash-4.4$ ./lab11_ciyob_215
+Array p:
+10000001
+10100011
+01101111
+11001010
+10011010
+01000011
+10011001
+11100101
+Decimal format:
+129
+163
+111
+202
+154
+67
+153
+229
+
+byte0:
+01010011
+Decimal format: 83
+
+Array p after setlsbs():
+10000001
+10100011
+01101110
+11001010
+10011011
+01000010
+10011001
+11100100
+
+Decimal format:
+129
+163
+110
+202
+155
+66
+153
+228
+
+Least significant bits from p using getlsbs():
+01010011
+Decimal format: 83
+bash-4.4$ ./lab11_ciyob_215
+Array p:
+10000011
+10101110
+11100111
+01110110
+00101111
+01011101
+01101111
+10000011
+Decimal format:
+131
+174
+231
+118
+47
+93
+111
+131
+
+byte0:
+01000101
+Decimal format: 69
+
+Array p after setlsbs():
+10000011
+10101110
+11100111
+01110110
+00101110
+01011100
+01101111
+10000010
+
+Decimal format:
+131
+174
+231
+118
+46
+92
+111
+130
+
+Least significant bits from p using getlsbs():
+01000101
+Decimal format: 69
+bash-4.4$ ./lab11_ciyob_215
+Array p:
+10011100
+10010010
+00001000
+00100011
+00110100
+11000111
+11001111
+01110011
+Decimal format:
+156
+146
+8
+35
+52
+199
+207
+115
+
+byte0:
+01100111
+Decimal format: 103
+
+Array p after setlsbs():
+10011101
+10010011
+00001001
+00100010
+00110100
+11000111
+11001111
+01110010
+
+Decimal format:
+157
+147
+9
+34
+52
+199
+207
+114
+
+Least significant bits from p using getlsbs():
+01100111
+Decimal format: 103
+bash-4.4$ ./lab11_ciyob_215
+Array p:
+10001000
+00101101
+01111001
+01000110
+01011000
+00010010
+10000100
+00010111
+Decimal format:
+136
+45
+121
+70
+88
+18
+132
+23
+
+byte0:
+10000111
+Decimal format: 135
+
+Array p after setlsbs():
+10001001
+00101101
+01111001
+01000110
+01011000
+00010010
+10000100
+00010111
+
+Decimal format:
+137
+45
+121
+70
+88
+18
+132
+23
+
+Least significant bits from p using getlsbs():
+10000111
+Decimal format: 135
+bash-4.4$ ./lab11_ciyob_215
+Array p:
+00011001
+01010010
+10000000
+01111110
+00100011
+01110111
+00101100
+10001010
+Decimal format:
+25
+82
+128
+126
+35
+119
+44
+138
+
+byte0:
+11011111
+Decimal format: 223
+
+Array p after setlsbs():
+00011001
+01010011
+10000001
+01111111
+00100011
+01110110
+00101101
+10001011
+
+Decimal format:
+25
+83
+129
+127
+35
+118
+45
+139
+
+Least significant bits from p using getlsbs():
+11011111
+Decimal format: 223
+bash-4.4$ ./lab11_ciyob_215
+Array p:
+10111010
+10010110
+11110011
+11011100
+01000011
+10000110
+00101111
+01100100
+Decimal format:
+186
+150
+243
+220
+67
+134
+47
+100
+
+byte0:
+01011110
+Decimal format: 94
+
+Array p after setlsbs():
+10111010
+10010111
+11110011
+11011101
+01000011
+10000110
+00101111
+01100100
+
+Decimal format:
+186
+151
+243
+221
+67
+134
+47
+100
+
+Least significant bits from p using getlsbs():
+01011110
+Decimal format: 94
+bash-4.4$ ./lab11_ciyob_215
+Array p:
+11010101
+10000111
+00011110
+00011111
+10000101
+10011110
+11000011
+10110110
+Decimal format:
+213
+135
+30
+31
+133
+158
+195
+182
+
+byte0:
+00111111
+Decimal format: 63
+
+Array p after setlsbs():
+11010101
+10000111
+00011111
+00011111
+10000101
+10011111
+11000010
+10110110
+
+Decimal format:
+213
+135
+31
+31
+133
+159
+194
+182
+
+Least significant bits from p using getlsbs():
+00111111
+Decimal format: 63
+bash-4.4$ ./lab11_ciyob_215
+Array p:
+10111000
+00101101
+10110110
+00110001
+10010101
+00000101
+00010000
+00100101
+Decimal format:
+184
+45
+182
+49
+149
+5
+16
+37
+
+byte0:
+11000100
+Decimal format: 196
+
+Array p after setlsbs():
+10111000
+00101100
+10110111
+00110000
+10010100
+00000100
+00010001
+00100101
+
+Decimal format:
+184
+44
+183
+48
+148
+4
+17
+37
+
+Least significant bits from p using getlsbs():
+11000100
+Decimal format: 196
+bash-4.4$ ./lab11_ciyob_215
+Array p:
+10011011
+00110010
+11110101
+00101001
+01100010
+00011101
+11011110
+00100010
+Decimal format:
+155
+50
+245
+41
+98
+29
+222
+34
+
+byte0:
+01010011
+Decimal format: 83
+
+Array p after setlsbs():
+10011011
+00110011
+11110100
+00101000
+01100011
+00011100
+11011111
+00100010
+
+Decimal format:
+155
+51
+244
+40
+99
+28
+223
+34
+
+Least significant bits from p using getlsbs():
+01010011
+Decimal format: 83
+bash-4.4$ ./lab11_ciyob_215
+Array p:
+00110100
+10000100
+10111001
+11010010
+00110111
+01101001
+11110111
+10001101
+Decimal format:
+52
+132
+185
+210
+55
+105
+247
+141
+
+byte0:
+01010110
+Decimal format: 86
+
+Array p after setlsbs():
+00110100
+10000101
+10111001
+11010010
+00110111
+01101000
+11110111
+10001100
+
+Decimal format:
+52
+133
+185
+210
+55
+104
+247
+140
+
+Least significant bits from p using getlsbs():
+01010110
+Decimal format: 86
+bash-4.4$ make clean
+rm lab11_ciyob_215
+bash-4.4$ exit
+
+Script done on 2023-11-14 21:49:08-05:00
